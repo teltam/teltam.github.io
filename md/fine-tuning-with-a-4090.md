@@ -24,7 +24,7 @@ The glaive model used data prepared by `glaive ai` and we will use the same. The
 
 First let's log into hugging face and wandb. We need hugging face authentication to download models, and we are using wandb to track the progress of the fine-tuning process. We can log into both services using the following shell commands which will ask for user credentials,
 
-```
+```bash
 pip install -q -U trl transformers accelerate git+https://github.com/huggingface/peft.git
 
 pip install -q -U datasets bitsandbytes einops scipy wandb sentencepiece
@@ -45,7 +45,7 @@ The axolotl repo can be found [here](https://github.com/OpenAccess-AI-Collective
 
 First let's install the libraries,
 
-```
+```bash
 git clone https://github.com/OpenAccess-AI-Collective/axolotl
 cd axolotl
 
@@ -57,7 +57,7 @@ pip3 install -U git+https://github.com/huggingface/peft.git
 
 Next, let's modify the config script in this repo. The config file should be under `axolotl/examples/code-llama/7b/` inside the root of the repo. We are using the CodeLlama model, so first find the qlora config (`axolotl/examples/code-llama/7b/qlora.yml`) and modify the following fields in the yaml file with the values below,
 
-```
+```yaml
 base_model: codellama/CodeLlama-7b-Instruct-hf
 base_model_config: codellama/CodeLlama-7b-Instruct-hf
 
@@ -76,13 +76,13 @@ num_epochs: 1
 
 
 Now let's run axolotl\ using accelerate,
-```
+```bash
 accelerate launch -m axolotl.cli.train axolotl/examples/code-llama/7b/qlora.yml
 ```
 
 This should launch the process and when it complete (about 10 hours or more) you should see the training results on wandb. You will also see a similar graph on wandb for training loss. The loss metric is how you determine if the fine-tuning is successful or not (it should be similar to the screenshot below).
 
-![[Screen_Shot_2023-10-16_at_22.15.39.png]]
+![](../media/eval-loss.png)
 
 
 Axolotl will also save the qlora layer output in a folder called `qlora_output`. You should see that in the dir from which you started the accelerate command above.
@@ -93,14 +93,14 @@ Given the `qlora-out` folder, we need to merge the layers into a single model th
 
 First make sure to install the packages required if you choose to use a different virtual env or just install `peft`.
 
-```
-!pip install -q -U accelerate transformers peft protobuf sentencepiece
+```bash
+pip install -q -U accelerate transformers peft protobuf sentencepiece
 ```
 
 
 The following code is setup to run as is using the outputs form the previous step and will upload a fine-tuned model to hugging face with the model name that matches `output_dir` in the code below.
 
-```
+```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 import torch
@@ -151,7 +151,7 @@ To compute the eval score we will use OpenAI `human-eval` and perform inference 
 
 First install `human-eval` using the instruction in [that repo](https://github.com/openai/human-eval),
 
-```
+```bash
 git clone https://github.com/openai/human-eval
 
 pip install -e human-eval
@@ -160,14 +160,14 @@ pip install -e human-eval
 
 Next, let's install `vllm` for faster inference,
 
-```
+```bash
 pip install vllm
 ```
 
 
 Now let's run the following shell command to generate human-eval inference output,
 
-```
+```bash
 model="<huggingface path>" # like `hf-user-name/fine-tune-model`
 temp=0.2
 max_len=1024
@@ -189,7 +189,7 @@ This should produce a folder and json files under `preds/T0.2_N1` (`output_path`
 
 Now let's run the scoring function to compute the score,
 
-```
+```bash
 output_path=preds/T${temp}_N${pred_num}
 
 echo 'Output path: ' $output_path
@@ -201,7 +201,7 @@ evaluate_functional_correctness ${output_path}.jsonl
 
 and you should see a final score in the shell output,
 
-```
+```json
 {'pass@1': 0.3902439024390244}
 ```
 

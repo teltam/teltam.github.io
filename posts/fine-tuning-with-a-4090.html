@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>fine-tuning-with-a-4090</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "96199c1ca02344b698924c0e72918533"}'></script><!-- End Cloudflare Web Analytics -->
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#fine-tuning-guide-with-a-4090"
+id="toc-fine-tuning-guide-with-a-4090">Fine-tuning Guide with a 4090</a>
+<ul>
+<li><a href="#pick-a-base-pre-trained-model-and-dataset"
+id="toc-pick-a-base-pre-trained-model-and-dataset">Pick a base
+pre-trained model and dataset</a></li>
+<li><a href="#run-the-process" id="toc-run-the-process">Run the
+process</a></li>
+<li><a href="#compute-final-eval-score-with-human-eval"
+id="toc-compute-final-eval-score-with-human-eval">Compute final eval
+score with <code>human-eval</code></a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="fine-tuning-guide-with-a-4090">Fine-tuning Guide with a
+4090</h1>
+<p>This guide walks through the steps to fine-tuning a smallish model
+(7B) on local hardware end-to-end.</p>
+<p>The end-to-end process is, 1. Pick a base pre-trained model and
+dataset 2. Run the process. 3. Compute final eval score with
+<code>human-eval</code>.</p>
+<p>For this guide let’s reproduce the fine-tuning process for <a
+href="https://huggingface.co/glaiveai/glaive-coder-7b"><code>glaiveai/glaive-coder-7b</code></a>.</p>
+<p>Before starting the process, create a virtual environment for python
+(using venv, conda etc) and activate it.</p>
+<h3 id="pick-a-base-pre-trained-model-and-dataset">Pick a base
+pre-trained model and dataset</h3>
+<p>I have a 4090 with 24GB of RAM and if we use 16 bit floating point
+numbers, we should be able to fit a 7B parameter model (about 14GB of
+RAM used) on this GPU with enough overhead to run other operations.</p>
+<p>The <code>glaive-coder-7b</code> model is fine-tuned on
+<code>codellama/CodeLlama-7b-Instruct-hf</code> and we will use this
+model as the base model.</p>
+<p>The glaive model used data prepared by <code>glaive ai</code> and we
+will use the same. There are some considerations toward acquiring and
+preparing the data for fine-tuning but we will not cover that in this
+guild. Let’s use <code>TokenBender/glaive_coder_raw_text</code> from
+huggingface which has the dataset ready to go.</p>
+<h3 id="run-the-process">Run the process</h3>
+<h4 id="huggingface-and-wandb-login">HuggingFace and WandB login</h4>
+<p>First let’s log into hugging face and wandb. We need hugging face
+authentication to download models, and we are using wandb to track the
+progress of the fine-tuning process. We can log into both services using
+the following shell commands which will ask for user credentials,</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-q</span> <span class="at">-U</span> trl transformers accelerate git+https://github.com/huggingface/peft.git</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-q</span> <span class="at">-U</span> datasets bitsandbytes einops scipy wandb sentencepiece</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> credential.helper store</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">huggingface-cli</span> login</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">wandb</span> login</span></code></pre></div>
+<p>If you don’t have an account with these services you will have to
+create one. For hugging face you need to create an API keys in the
+account settings page. WandB requires creating a project and which will
+generate a key unique for that project. The <code>git config</code>
+command will help save the credentials for reuse.</p>
+<h4 id="axolotl">Axolotl</h4>
+<p>We will use axolotl to do the heavy-lifting with the fine-tuning. The
+library is setup to quickly use either LoRA or QLoRA to perform
+fine-tuning. This guide does not cover the details of those processes,
+and we are not performing a full fine-tune. We will specifically use
+QLoRA for this guide because it’s relatively faster.</p>
+<p>The axolotl repo can be found <a
+href="https://github.com/OpenAccess-AI-Collective/axolotl#quickstart-">here</a>.
+We will uses the steps in the quick start section from the repo’s
+readme.</p>
+<p>First let’s install the libraries,</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/OpenAccess-AI-Collective/axolotl</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> axolotl</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install packaging</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install <span class="at">-e</span> <span class="st">&#39;.[flash-attn,deepspeed]&#39;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install <span class="at">-U</span> git+https://github.com/huggingface/peft.git</span></code></pre></div>
+<p>Next, let’s modify the config script in this repo. The config file
+should be under <code>axolotl/examples/code-llama/7b/</code> inside the
+root of the repo. We are using the CodeLlama model, so first find the
+qlora config (<code>axolotl/examples/code-llama/7b/qlora.yml</code>) and
+modify the following fields in the yaml file with the values below,</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">base_model</span><span class="kw">:</span><span class="at"> codellama/CodeLlama-7b-Instruct-hf</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">base_model_config</span><span class="kw">:</span><span class="at"> codellama/CodeLlama-7b-Instruct-hf</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">datasets</span><span class="kw">:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">path</span><span class="kw">:</span><span class="at"> TokenBender/glaive_coder_raw_text</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sequence_len</span><span class="kw">:</span><span class="at"> </span><span class="dv">2048</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">wandb_project</span><span class="kw">:</span><span class="at"> &lt;add-project-created-from-wandb&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">wandb_entity</span><span class="kw">:</span><span class="at"> &lt;add-wandb-username&gt;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">wandb_run_id</span><span class="kw">:</span><span class="at"> &lt;pick-a-unique-string&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">num_epochs</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span></code></pre></div>
+<p>Now let’s run axolotl using accelerate,</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">accelerate</span> launch <span class="at">-m</span> axolotl.cli.train axolotl/examples/code-llama/7b/qlora.yml</span></code></pre></div>
+<p>This should launch the process and when it complete (about 10 hours
+or more) you should see the training results on wandb. You will also see
+a similar graph on wandb for training loss. The loss metric is how you
+determine if the fine-tuning is successful or not (it should be similar
+to the screenshot below).</p>
+<p><img src="../media/eval-loss.png" /></p>
+<p>Axolotl will also save the qlora layer output in a folder called
+<code>qlora_output</code>. You should see that in the dir from which you
+started the accelerate command above.</p>
+<h4 id="merge-layers">Merge Layers</h4>
+<p>Given the <code>qlora-out</code> folder, we need to merge the layers
+into a single model that can then be used for inference and eval. We
+will rely on peft to perform this step. The guide does not cover the
+details of that library.</p>
+<p>First make sure to install the packages required if you choose to use
+a different virtual env or just install <code>peft</code>.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-q</span> <span class="at">-U</span> accelerate transformers peft protobuf sentencepiece</span></code></pre></div>
+<p>The following code is setup to run as is using the outputs form the
+previous step and will upload a fine-tuned model to hugging face with
+the model name that matches <code>output_dir</code> in the code
+below.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> AutoModelForCausalLM, AutoTokenizer</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> peft <span class="im">import</span> PeftModel</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>base_model_name_or_path <span class="op">=</span> <span class="st">&quot;codellama/CodeLlama-7b-Instruct-hf&quot;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>peft_model_path <span class="op">=</span> <span class="st">&quot;qlora-out&quot;</span>. <span class="co"># &lt;------- READER </span><span class="al">NOTE</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>output_dir <span class="op">=</span> <span class="st">&quot;finetune-guide-glave-repro&quot;</span>. <span class="co"># &lt;----- READER </span><span class="al">NOTE</span><span class="co">: merge output</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> <span class="st">&quot;cuda:0&quot;</span>  <span class="co"># or specify a specific device like &quot;cuda:1&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>push_to_hub <span class="op">=</span> <span class="va">True</span> <span class="co"># or True if you want to push to the hub</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Loading base model: </span><span class="sc">{</span>base_model_name_or_path<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> device <span class="op">==</span> <span class="st">&#39;auto&#39;</span>:</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    device_arg <span class="op">=</span> { <span class="st">&#39;device_map&#39;</span>: <span class="st">&#39;auto&#39;</span> }</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    device_arg <span class="op">=</span> { <span class="st">&#39;device_map&#39;</span>: { <span class="st">&quot;&quot;</span>: device} }</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>base_model <span class="op">=</span> AutoModelForCausalLM.from_pretrained(</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    base_model_name_or_path,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    return_dict<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    torch_dtype<span class="op">=</span>torch.float16,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>device_arg</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co">## The merge step</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Loading PEFT: </span><span class="sc">{</span>peft_model_path<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> PeftModel.from_pretrained(base_model, peft_model_path, <span class="op">**</span>device_arg)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Running merge_and_unload&quot;</span>)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> model.merge_and_unload()</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(peft_model_path)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> push_to_hub:</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Saving to hub ...&quot;</span>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    model.push_to_hub(<span class="ss">f&quot;</span><span class="sc">{</span>output_dir<span class="sc">}</span><span class="ss">&quot;</span>, use_temp_dir<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    tokenizer.push_to_hub(<span class="ss">f&quot;</span><span class="sc">{</span>output_dir<span class="sc">}</span><span class="ss">&quot;</span>, use_temp_dir<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    model.save_pretrained(<span class="ss">f&quot;</span><span class="sc">{</span>output_dir<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    tokenizer.save_pretrained(<span class="ss">f&quot;</span><span class="sc">{</span>output_dir<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Model saved to </span><span class="sc">{</span>output_dir<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>After the upload you should be able to see the new model on
+huggingface under your account.</p>
+<h3 id="compute-final-eval-score-with-human-eval">Compute final eval
+score with <code>human-eval</code></h3>
+<p>To compute the eval score we will use OpenAI <code>human-eval</code>
+and perform inference on that dataset. The setup instructions are
+borrowed from this mirror of the WizardLM <a
+href="https://github.com/TokenBender/WizardLM/tree/main/WizardCoder#humaneval">git
+repo</a>.</p>
+<p>First install <code>human-eval</code> using the instruction in <a
+href="https://github.com/openai/human-eval">that repo</a>,</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/openai/human-eval</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-e</span> human-eval</span></code></pre></div>
+<p>Next, let’s install <code>vllm</code> for faster inference,</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install vllm</span></code></pre></div>
+<p>Now let’s run the following shell command to generate human-eval
+inference output,</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="va">model</span><span class="op">=</span><span class="st">&quot;&lt;huggingface path&gt;&quot;</span> <span class="co"># like `hf-user-name/fine-tune-model`</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="va">temp</span><span class="op">=</span>0.2</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="va">max_len</span><span class="op">=</span>1024</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="va">pred_num</span><span class="op">=</span>1</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="va">num_seqs_per_iter</span><span class="op">=</span><span class="kw">``</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="va">output_path</span><span class="op">=</span>preds/T<span class="va">${temp}</span>_N<span class="va">${pred_num}</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">${output_path}</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&#39;Output path: &#39;</span><span class="va">$output_path</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&#39;Model to eval: &#39;</span><span class="va">$model</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="va">CUDA_VISIBLE_DEVICES</span><span class="op">=</span>0 <span class="ex">python</span> humaneval_gen_vllm.py <span class="at">--model</span> <span class="va">${model}</span> <span class="dt">\</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--start_index</span> 0 <span class="at">--end_index</span> 164 <span class="at">--temperature</span> <span class="va">${temp}</span> <span class="dt">\</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--num_seqs_per_iter</span> <span class="va">${num_seqs_per_iter}</span> <span class="at">--N</span> <span class="va">${pred_num}</span> <span class="at">--max_len</span> <span class="va">${max_len}</span> <span class="at">--output_path</span> <span class="va">${output_path}</span> <span class="at">--num_gpus</span> 1</span></code></pre></div>
+<p>This should produce a folder and json files under
+<code>preds/T0.2_N1</code> (<code>output_path</code> variable in the
+code).</p>
+<p>Now let’s run the scoring function to compute the score,</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="va">output_path</span><span class="op">=</span>preds/T<span class="va">${temp}</span>_N<span class="va">${pred_num}</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&#39;Output path: &#39;</span> <span class="va">$output_path</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> process_humaneval.py <span class="at">--path</span> <span class="va">${output_path}</span> <span class="at">--out_path</span> <span class="va">${output_path}</span>.jsonl <span class="at">--add_prompt</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ex">evaluate_functional_correctness</span> <span class="va">${output_path}</span>.jsonl</span></code></pre></div>
+<p>and you should see a final score in the shell output,</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="er">&#39;pass@1&#39;</span><span class="fu">:</span> <span class="fl">0.3902439024390244</span><span class="fu">}</span></span></code></pre></div>
+<p>which completes the fine-tuning process.</p>
+<p>For this guide we have only one epoch which produced a fairly decent
+39% pass score for a 7b parameter model.</p>
+</body>
+</html>
