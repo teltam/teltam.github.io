@@ -69,7 +69,9 @@ values = [
 
 Here, we represent and interpret each row of the `keys` matrix to one of the four keys `"dog"`, `"cat"`, `"tiger"`, `8`, (in this order). The `values` matrix is a column vector for the corresponding values from the example above.
 
-To look up `dog` we first setup a `query` matrix using the row interpretation of the `keys` matrix as,
+In this example we have fixed set of `keys` and the possible `queries` come from this set. Ie, the "domains" of these two objects are the same.
+
+To look up `dog` we first setup a matrix, `query`, using the row interpretation of the `keys` matrix as,
 ```maths
 dog_query = [
 	1 0 0 0
@@ -82,7 +84,7 @@ dog_query = [
 
 Here, the `dog_query` is a row vector with the first column set to 1 and the others 0. The 1 in the first column means we want the first key `dog`. If we wanted to pick `tiger`, we would set the last column to 1.
 
-The idea with the query matrix is that a row in that matrix is a binary selector of a particular column and each column is interpreted as the key we want to lookup. Note how the column set to `1` is the index that matches the corresponding row in the `keys` matrix. Ie, the first column matches with the first row, the second column with the second row and so on. The column count must match the row count of the keys matrix.
+The idea with the `query` matrix is that a row in that matrix is a binary selector of a particular column in the `key` matrix, expressed as a matrix multiplication. Each column thus is interpreted as the key we want to lookup. Note how the column set to `1` is the index that matches the corresponding row in the `keys` matrix. Ie, the first column matches with the first row, the second column with the second row and so on. The column count must match the row count of the keys matrix.
 
 To perform the actual look up we simply multiply the `query`, `key` and `value` matrix using the rules of matrix multiplication,
 ```maths
@@ -127,30 +129,43 @@ output: k * values -> [
 ]
 ```
 
+From the `output`, we can simply look up the row corresponding to the `queries` to get the output we wanted.
+
 ## "Soft" keys
 
-The matrix lookup above is doing exactly what the python dictionary look up would do except in a different notation assuming you setup the problem in accordance to the rules of matrix multiplication.
+The matrix lookup above is doing exactly what the python dictionary lookup would do except in a different notation assuming you setup the problem in accordance to the rules of matrix multiplication.
 
 The important observation here is that the keys matrix is a collection of null vectors with one of the columns set to 1. The interpretation we make with this setup is that the keys are independent of each other. In the real world we make two assumptions about objects (keys in our case). We assume that,
 
-	1. objects are discrete for the sake of interpretability and complexity.
-	2. objects that could be related are handled in a manner that remove that relatedness.
+	1. objects are discrete entities, to make the problem easier to interpret and deal with.
+	2. objects are treated an independent entites, even though they could be related, and they are handled in a manner that remove that relatedness.
 
-In the `m` dict above, we introduce an exact match for lookup because we want objects to map to exactly one value. If objects are related, like `dog` and `cat`, we remove any relationship that the real world has (ie they are both animals). We do this because for our hypothetical use-case it might not matter and we can ignore it having understood that we can ignore this relationship.
+In the `m` dict above, we introduce an exact match for lookup because we want objects to map to exactly one value. If objects are related, like `dog` and `cat`, we remove any relationship that the real world has (ie they are both animals). We do this because for our hypothetical use-case it might not matter, and we can ignore it having understood that we can ignore this relationship.
 
-However if we did want to introduce a relationship between `dog` and `cat` using the key `"animal"` for example, we have to do so using additional python code,
+However if we did want to introduce a relationship between `dog` and `cat`, we have a few options, 
+
+1. We look at our use case and figure out a way to connect `dog`, `cat`, `tiger` and our new key `animal`.
+2. We ignore the relationship of `animal` with the existing keys of the dictionary and assign some value our use case would find useful.
+
+Both options would satisfy our assumptions above.
+
+An example of option 1 and option 2 in python code would be, 
 ```python
+# option 1
 dog_value = m["dog"]
 cat_value = m["cat"]
 
 animal_value = dog_value + cat_value
 
 m["animal"] = animal_value
+
+# option 2
+m["animal"] = 112
 ```
 
-Here we introduce a new key `"animal"`, and every new key has to have additional python code to handle them. What if we did not want to introduce this new key like the code above explicitly? 
+What if we did not want to explicitly introduce this new key like the code above? 
 
-In python we could simply introduce a new operation to perform a combined key look up,
+In python we could simply introduce a new operation to perform a combined key look up, that is a variation of option 1,
 ```python
 def soft_key_lookup(keys):
 	collector = 0
@@ -176,9 +191,9 @@ output: k * values -> [
 ]
 ```
 
-This process is however cumbersome, we have related `"dog"` and `"cat"` but we might have missed the relationship between `"animal"` and `"tiger"`.
+This process is however cumbersome. We have related `"dog"` and `"cat"` but we might have missed the relationship between `"animal"` and `"tiger"`.
 
-The ability to combine keys (based on our interpretation) is the key-concept of Attention as used in transformers and other machine learning architectures. The idea is that if we can introduce a learnable parameter we can simply learn the relationship between keys and values, and for a query that might not have had an _exact match_ we can compute a "partial" or "soft" match.
+The ability to combine keys (based on our interpretation) is the key-concept of Attention as used in transformers and other machine learning architectures. The idea is that if we can introduce a _learnable parameter_ we can simply learn the relationship between keys and values, and for a query that might not have had an _exact match_ we can compute a "partial" or "soft" match.
 
 The intuition for Attention comes from the idea that we go from,
 ```maths
