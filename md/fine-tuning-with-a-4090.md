@@ -1,7 +1,10 @@
-# Fine-tuning Guide with a 4090
+---
+title: Fine-tuning Guide with a 4090
+---
+
 This guide walks through the steps to fine-tuning a smallish model (7B) on local hardware end-to-end.
 
-The end-to-end process is, 
+The end-to-end process is,
 1. Pick a base pre-trained model and dataset
 2. Run the process.
 3. Compute final eval score with `human-eval`.
@@ -10,7 +13,7 @@ For this guide let's reproduce the fine-tuning process for [`glaiveai/glaive-cod
 
 Before starting the process, create a virtual environment for python (using venv, conda etc) and activate it.
 
-### Pick a base pre-trained model and dataset
+## Pick a base pre-trained model and dataset
 
 I have a 4090 with 24GB of RAM and if we use 16 bit floating point numbers, we should be able to fit a 7B parameter model (about 14GB of RAM used) on this GPU with enough overhead to run other operations.
 
@@ -18,9 +21,9 @@ The `glaive-coder-7b` model is fine-tuned on `codellama/CodeLlama-7b-Instruct-hf
 
 The glaive model used data prepared by `glaive ai` and we will use the same. There are some considerations toward acquiring and preparing the data for fine-tuning but we will not cover that in this guild. Let's use `TokenBender/glaive_coder_raw_text` from huggingface which has the dataset ready to go.
 
-### Run the process
+## Run the process
 
-#### HuggingFace and WandB login
+### HuggingFace and WandB login
 
 First let's log into hugging face and wandb. We need hugging face authentication to download models, and we are using wandb to track the progress of the fine-tuning process. We can log into both services using the following shell commands which will ask for user credentials,
 
@@ -37,7 +40,7 @@ wandb login
 
 If you don't have an account with these services you will have to create one. For hugging face you need to create an API keys in the account settings page. WandB requires creating a project and which will generate a key unique for that project. The `git config` command will help save the credentials for reuse.
 
-#### Axolotl
+### Axolotl
 
 We will use axolotl to do the heavy-lifting with the fine-tuning. The library is setup to quickly use either LoRA or QLoRA to perform fine-tuning. This guide does not cover the details of those processes, and we are not performing a full fine-tune. We will specifically use QLoRA for this guide because it's relatively faster.
 
@@ -87,7 +90,7 @@ This should launch the process and when it complete (about 10 hours or more) you
 
 Axolotl will also save the qlora layer output in a folder called `qlora_output`. You should see that in the dir from which you started the accelerate command above.
 
-#### Merge Layers
+### Merge Layers
 
 Given the `qlora-out` folder, we need to merge the layers into a single model that can then be used for inference and eval. We will rely on peft to perform this step. The guide does not cover the details of that library.
 
@@ -145,7 +148,7 @@ else:
 
 After the upload you should be able to see the new model on huggingface under your account.
 
-###  Compute final eval score with `human-eval`
+##  Compute final eval score with `human-eval`
 
 To compute the eval score we will use OpenAI `human-eval` and perform inference on that dataset. The setup instructions are borrowed from this mirror of the WizardLM [git repo](https://github.com/TokenBender/WizardLM/tree/main/WizardCoder#humaneval).
 

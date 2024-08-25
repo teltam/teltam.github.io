@@ -1,8 +1,10 @@
-# Logistic Regression == Link(Linear Regression) ??
+---
+title: Logistic Regression == Link(Linear Regression) ??
+---
 
-### Linear Regression
+## Linear Regression
 
-For Linear Regression, given a Dependent variable `y` that is a Real number, we want to use the Independent variable `x`, also a Real number, to predict `y`. The formulation for Linear Regression is, 
+For Linear Regression, given a Dependent variable `y` that is a Real number, we want to use the Independent variable `x`, also a Real number, to predict `y`. The formulation for Linear Regression is,
 
 $$ y = w*x + b $$
 
@@ -12,14 +14,14 @@ If we have a list of independent variables, we can rewrite this line to a multi-
 
 $$ Y = w^T*X + B $$
 
-Here, `w` is the learnable parameter. We estimate the value of `w` for a given dataset `D` of size `n` typically with Ordinary Least Squares which is a closed form solution and is the Maximum Likelihood estimate [1].  The key assumptions here are that both `Y` and `X` are continuous (Real numbers). Essentially Linear Regressions helps us model a function that maps real numbers to real numbers (ie. $R \to R$). What if we want to model binary or multi-label outputs? 
+Here, `w` is the learnable parameter. We estimate the value of `w` for a given dataset `D` of size `n` typically with Ordinary Least Squares which is a closed form solution and is the Maximum Likelihood estimate [1].  The key assumptions here are that both `Y` and `X` are continuous (Real numbers). Essentially Linear Regressions helps us model a function that maps real numbers to real numbers (ie. $R \to R$). What if we want to model binary or multi-label outputs?
 
-### Step Function
+## Step Function
 
 One way to do this is to use a step function. The extension is fairly simple in that we take the Linear Regression model and apply a 'sign' [2] function to it,
 $$ Y = sign\ \ (\ w^T*X + B\ \ ) $$
 $$ sign(x) = \begin{cases} 1,\ x \ge 0 \\ 0,\ x < 0 \end{cases} $$
-The sign function here captures the idea that if we output a positive value then we match that to one of the _two_ classes. For a 0 or negative value we assign it to the opposite class. 
+The sign function here captures the idea that if we output a positive value then we match that to one of the _two_ classes. For a 0 or negative value we assign it to the opposite class.
 
 The problem with this model is that the formulation might make sense but it not work in practice. Linear regression works because it assume linearity, but this is tied to the dependent variable. Some problems happen to be linearly separable but most aren't,
 
@@ -27,7 +29,7 @@ The problem with this model is that the formulation might make sense but it not 
 
 Non-linear regression can help but using the sign function limits what we can do. We can however take the idea of using an intermediate transformation on the regression and with the right choice of transformation solve this problem. The idea of "link" functions are the way to solve this, using logits.
 
-### Binary Logistic Regression
+## Binary Logistic Regression
 
 Let's first look at learning a model that can predict a binary value (ie 0 or 1). We know that we want a function that can map $R \to [0,1]$. The standard normal distribution function is a good candidate and this idea is called the Probit model [3], and around the same time the idea of using log odds showed up [4].
 
@@ -41,13 +43,13 @@ $$ odds = p / (1-p) $$
 
 The odds ratio maps probability values to $(0, +\infty)$. If we use the `log` function on the odds we get a function that maps probability values to $(-\infty, +\infty)$. Log just happens to be the right function to extend the probability mapping. Logits is a portmanteau of "log" and "digits". It just means "the log of numbers", which comes from taking the logs of the odds ratio.
 
-To tie this all together, let's call the linear regression on the inputs `f(x)` and the dependent variable `y` which represents the binary random variable. 
+To tie this all together, let's call the linear regression on the inputs `f(x)` and the dependent variable `y` which represents the binary random variable.
 
 For linear regression we are trying to learn params that will help us model the dependent variable `y'` using the regression using the following form,
 
 $$ y' = f(x) \ \ \ \ \ \ \ \ where \ f(x) = w*x + b$$
 
-For a binary variable, `y`, we first apply the log odds link function to y and then model the log odds using the regression. We have a model of the binary dependent variable `y` in terms of `x` just like we tried to with the `sign` function above except we formulate it using an intermediate log odds step with a rearrangement of terms, 
+For a binary variable, `y`, we first apply the log odds link function to y and then model the log odds using the regression. We have a model of the binary dependent variable `y` in terms of `x` just like we tried to with the `sign` function above except we formulate it using an intermediate log odds step with a rearrangement of terms,
 
 $$
 \begin{aligned}
@@ -58,13 +60,13 @@ log(\frac{y}{1-y}) = f(x) \\ \\
 \end{aligned}
 $$
 
-Note, multi-label is not the same as multi-class. They sound similar but are different. Multi-label means the dependent label can only be 1 of N labels. It cannot be two labels at the same time. This might seem confusing because many real world objects are typically a combination of multiple labels. To be clear, think of multi-label as predicting "an orange or an apple" for a given image of a fruit. This means that it _has_ to be one or the other and the probability value is modeled using log odds to reflect this. The reason we have $log \ (p / (1-p))$ is to capture this relationship. That is "it is either X or it is not X". 
+Note, multi-label is not the same as multi-class. They sound similar but are different. Multi-label means the dependent label can only be 1 of N labels. It cannot be two labels at the same time. This might seem confusing because many real world objects are typically a combination of multiple labels. To be clear, think of multi-label as predicting "an orange or an apple" for a given image of a fruit. This means that it _has_ to be one or the other and the probability value is modeled using log odds to reflect this. The reason we have $log \ (p / (1-p))$ is to capture this relationship. That is "it is either X or it is not X".
 
-Multi-class on the other hand specifically means the model outputs are independent of each other and think of the classes as being "true" at the same time. Instead of asking "is this an orange or an apple" in the case of multi-label, we are asking "is this an apple? ok, is this an orange?" in the multi-class setup. For multi-label regression, the formulation is different and you can think of the setup as building a regression classifier for each of the different classes (think of it as `N` binary logistic regressions). 
+Multi-class on the other hand specifically means the model outputs are independent of each other and think of the classes as being "true" at the same time. Instead of asking "is this an orange or an apple" in the case of multi-label, we are asking "is this an apple? ok, is this an orange?" in the multi-class setup. For multi-label regression, the formulation is different and you can think of the setup as building a regression classifier for each of the different classes (think of it as `N` binary logistic regressions).
 
 So, how do we extend Binary Logistic Regression to Multinomial (or Multi-label Regression)?
 
-### Multi-label Logistic Regression
+## Multi-label Logistic Regression
 
 For multi-label logistic regression we have to look back at what the logit formulation is actually doing. When we start with $log(y/(1-y)) = f(x)$ we are essentially saying the "boundary line" between the two classes is `f(x)`. In the discussion above `f(x)` is linear for discussion's sake but it can be a non-linear function as well which would help with in cases like the circle dataset above. After rearranging the terms we get a "logistic" separation boundary as we saw above.
 
@@ -72,7 +74,7 @@ So, if we think of the logits as representing the boundary between two sets of d
 
 $$
 \begin{aligned}
-log \frac{P(y = i)}{P(y = K)} = w_i * x \\ 
+log \frac{P(y = i)}{P(y = K)} = w_i * x \\
 => P_{y=1} = P_{y=3} * e^{w_1 * x}\ and \\
 P_{y=2} = P_{y=3} * e^{w_2 * x}
 \end{aligned}
@@ -107,8 +109,12 @@ Which is the `softmax` function as defined in ML literature[5]
 
 ## References
 
-[1] https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote08.html \
-[2] https://en.wikipedia.org/wiki/Heaviside_step_function \
-[3] The origins and development of the logit model - J.S. Cramer, University of Amsterdam and Tinbergen Institute, Amsterdam \
-[4] https://en.wikipedia.org/wiki/Probit_model \
+[1] <https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote08.html>
+
+[2] <https://en.wikipedia.org/wiki/Heaviside_step_function>
+
+[3] The origins and development of the logit model - J.S. Cramer, University of Amsterdam and Tinbergen Institute, Amsterdam
+
+[4] <https://en.wikipedia.org/wiki/Probit_model>
+
 [5] Training Stochastic Model Recognition Algorithms as Networks can lead to Maximum Mutual Information Estimation of Parameters - John S. Bridle

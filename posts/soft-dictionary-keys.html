@@ -1,261 +1,90 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>soft-dictionary-keys</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
-    }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
-    }
-    a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
-    }
-    img {
-      max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
-    }
-    blockquote {
-      margin: 1em 0 1em 1.7em;
-      padding-left: 1em;
-      border-left: 2px solid #e6e6e6;
-      color: #606060;
-    }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      background-color: #1a1a1a;
-      border: none;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {  background-color: #f8f8f8; }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ef2929; } /* Alert */
-    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #204a87; } /* Attribute */
-    code span.bn { color: #0000cf; } /* BaseN */
-    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4e9a06; } /* Char */
-    code span.cn { color: #8f5902; } /* Constant */
-    code span.co { color: #8f5902; font-style: italic; } /* Comment */
-    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
-    code span.dt { color: #204a87; } /* DataType */
-    code span.dv { color: #0000cf; } /* DecVal */
-    code span.er { color: #a40000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #0000cf; } /* Float */
-    code span.fu { color: #204a87; font-weight: bold; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
-    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
-    code span.ot { color: #8f5902; } /* Other */
-    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
-    code span.ss { color: #4e9a06; } /* SpecialString */
-    code span.st { color: #4e9a06; } /* String */
-    code span.va { color: #000000; } /* Variable */
-    code span.vs { color: #4e9a06; } /* VerbatimString */
-    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+    <meta charset="utf-8">
+  <title>“Soft” Dictionary Keys</title>
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "96199c1ca02344b698924c0e72918533"}'></script><!-- End Cloudflare Web Analytics -->
+  <link rel="stylesheet" href="/css/water.min.css">
 </head>
 <body>
-<nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#soft-dictionary-keys" id="toc-soft-dictionary-keys">“Soft”
-Dictionary Keys</a>
-<ul>
-<li><a href="#python-dictionaries" id="toc-python-dictionaries">Python
-Dictionaries</a></li>
-<li><a href="#exact-dictionary-lookups"
-id="toc-exact-dictionary-lookups">Exact Dictionary Lookups</a></li>
-<li><a href="#matrix-lookup" id="toc-matrix-lookup">Matrix
-Lookup</a></li>
-<li><a href="#soft-keys" id="toc-soft-keys">“Soft” keys</a></li>
-<li><a href="#references" id="toc-references">References</a></li>
-</ul></li>
-</ul>
-</nav>
-<h1 id="soft-dictionary-keys">“Soft” Dictionary Keys</h1>
-<p>Transformer Neural Networks [1] utilize the key-concept of an
-Attention Mechanism to perform “lookups” on the data it has seen. In
-this post I want to detail the idea of “soft” keys, and for me it was
+
+<header>
+<h1 class="title">“Soft” Dictionary Keys</h1>
+</header>
+
+<p>[Transformer Neural Networks]<a href="#fn1" class="footnote-ref"
+id="fnref1" role="doc-noteref"><sup>1</sup></a> utilize the key-concept
+of an Attention Mechanism to perform “lookups” on the data it has seen.
+In this post I want to detail the idea of “soft” keys, and for me it was
 easier to get to the crux of how Transformers work with this
-understanding. I first came across this idea from a Lucas Beyer talk
-[2].</p>
+understanding. I first came across this idea from a [Lucas Beyer
+talk][2].</p>
 <h2 id="python-dictionaries">Python Dictionaries</h2>
 <p>Most programming languages implement a dictionary (or associative
 map) as a primitive data structure and define them as associations
@@ -272,8 +101,9 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <code>"tiger"</code>, <code>8</code> and they are mapped to values. The
 first three keys are Strings and the fourth key is a Number (integer in
 this case). All the values here are Numbers as well.</p>
-<p>Internally, python calls the in-built <code>hash</code>[3] [4] method
-to hash the keys into a well-known or fixed representation,</p>
+<p>Internally, python calls the in-built [<code>hash</code>][3]
+[method][4] to hash the keys into a well-known or fixed
+representation,</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="bu">hash</span>(<span class="dv">10</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dv">10</span></span>
@@ -281,7 +111,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dv">4001473844447581453</span></span></code></pre></div>
 <p>The key point here is that keys are converted into a well-defined
 representation. In the case of python the representation is eventually a
-fixed size integer [5].</p>
+[fixed size integer][5].</p>
 <h2 id="exact-dictionary-lookups">Exact Dictionary Lookups</h2>
 <p>For the python example, dictionary look ups work by supplying a query
 and returning the value for a key that <em>exactly</em> matches the
@@ -327,9 +157,12 @@ matrix to one of the four keys <code>"dog"</code>, <code>"cat"</code>,
 <code>"tiger"</code>, <code>8</code>, (in this order). The
 <code>values</code> matrix is a column vector for the corresponding
 values from the example above.</p>
-<p>To look up <code>dog</code> we first setup a <code>query</code>
-matrix using the row interpretation of the <code>keys</code> matrix
-as,</p>
+<p>In this example we have fixed set of <code>keys</code> and the
+possible <code>queries</code> come from this set. Ie, the “domains” of
+these two objects are the same.</p>
+<p>To look up <code>dog</code> we first setup a matrix,
+<code>query</code>, using the row interpretation of the
+<code>keys</code> matrix as,</p>
 <pre class="maths"><code>dog_query = [
     1 0 0 0
 ]
@@ -341,13 +174,14 @@ as,</p>
 column set to 1 and the others 0. The 1 in the first column means we
 want the first key <code>dog</code>. If we wanted to pick
 <code>tiger</code>, we would set the last column to 1.</p>
-<p>The idea with the query matrix is that a row in that matrix is a
-binary selector of a particular column and each column is interpreted as
-the key we want to lookup. Note how the column set to <code>1</code> is
-the index that matches the corresponding row in the <code>keys</code>
-matrix. Ie, the first column matches with the first row, the second
-column with the second row and so on. The column count must match the
-row count of the keys matrix.</p>
+<p>The idea with the <code>query</code> matrix is that a row in that
+matrix is a binary selector of a particular column in the
+<code>key</code> matrix, expressed as a matrix multiplication. Each
+column thus is interpreted as the key we want to lookup. Note how the
+column set to <code>1</code> is the index that matches the corresponding
+row in the <code>keys</code> matrix. Ie, the first column matches with
+the first row, the second column with the second row and so on. The
+column count must match the row count of the keys matrix.</p>
 <p>To perform the actual look up we simply multiply the
 <code>query</code>, <code>key</code> and <code>value</code> matrix using
 the rules of matrix multiplication,</p>
@@ -385,40 +219,54 @@ output: k * values -&gt; [
     10
     12
 ]</code></pre>
+<p>From the <code>output</code>, we can simply look up the row
+corresponding to the <code>queries</code> to get the output we
+wanted.</p>
 <h2 id="soft-keys">“Soft” keys</h2>
 <p>The matrix lookup above is doing exactly what the python dictionary
-look up would do except in a different notation assuming you setup the
+lookup would do except in a different notation assuming you setup the
 problem in accordance to the rules of matrix multiplication.</p>
 <p>The important observation here is that the keys matrix is a
 collection of null vectors with one of the columns set to 1. The
 interpretation we make with this setup is that the keys are independent
 of each other. In the real world we make two assumptions about objects
 (keys in our case). We assume that,</p>
-<pre><code>1. objects are discrete for the sake of interpretability and complexity.
-2. objects that could be related are handled in a manner that remove that relatedness.</code></pre>
+<pre><code>1. objects are discrete entities, to make the problem easier to interpret and deal with.
+2. objects are treated an independent entites, even though they could be related, and they are handled in a manner that remove that relatedness.</code></pre>
 <p>In the <code>m</code> dict above, we introduce an exact match for
 lookup because we want objects to map to exactly one value. If objects
 are related, like <code>dog</code> and <code>cat</code>, we remove any
 relationship that the real world has (ie they are both animals). We do
-this because for our hypothetical use-case it might not matter and we
+this because for our hypothetical use-case it might not matter, and we
 can ignore it having understood that we can ignore this
 relationship.</p>
 <p>However if we did want to introduce a relationship between
-<code>dog</code> and <code>cat</code> using the key
-<code>"animal"</code> for example, we have to do so using additional
-python code,</p>
+<code>dog</code> and <code>cat</code>, we have a few options,</p>
+<ol type="1">
+<li>We look at our use case and figure out a way to connect
+<code>dog</code>, <code>cat</code>, <code>tiger</code> and our new key
+<code>animal</code>.</li>
+<li>We ignore the relationship of <code>animal</code> with the existing
+keys of the dictionary and assign some value our use case would find
+useful.</li>
+</ol>
+<p>Both options would satisfy our assumptions above.</p>
+<p>An example of option 1 and option 2 in python code would be,</p>
 <div class="sourceCode" id="cb10"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dog_value <span class="op">=</span> m[<span class="st">&quot;dog&quot;</span>]</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>cat_value <span class="op">=</span> m[<span class="st">&quot;cat&quot;</span>]</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>animal_value <span class="op">=</span> dog_value <span class="op">+</span> cat_value</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>m[<span class="st">&quot;animal&quot;</span>] <span class="op">=</span> animal_value</span></code></pre></div>
-<p>Here we introduce a new key <code>"animal"</code>, and every new key
-has to have additional python code to handle them. What if we did not
-want to introduce this new key like the code above explicitly?</p>
+class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># option 1</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>dog_value <span class="op">=</span> m[<span class="st">&quot;dog&quot;</span>]</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>cat_value <span class="op">=</span> m[<span class="st">&quot;cat&quot;</span>]</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>animal_value <span class="op">=</span> dog_value <span class="op">+</span> cat_value</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>m[<span class="st">&quot;animal&quot;</span>] <span class="op">=</span> animal_value</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># option 2</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>m[<span class="st">&quot;animal&quot;</span>] <span class="op">=</span> <span class="dv">112</span></span></code></pre></div>
+<p>What if we did not want to explicitly introduce this new key like the
+code above?</p>
 <p>In python we could simply introduce a new operation to perform a
-combined key look up,</p>
+combined key look up, that is a variation of option 1,</p>
 <div class="sourceCode" id="cb11"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> soft_key_lookup(keys):</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    collector <span class="op">=</span> <span class="dv">0</span></span>
@@ -439,15 +287,15 @@ k: queries * keys -&gt; [
 output: k * values -&gt; [
     12
 ]</code></pre>
-<p>This process is however cumbersome, we have related
+<p>This process is however cumbersome. We have related
 <code>"dog"</code> and <code>"cat"</code> but we might have missed the
 relationship between <code>"animal"</code> and <code>"tiger"</code>.</p>
 <p>The ability to combine keys (based on our interpretation) is the
 key-concept of Attention as used in transformers and other machine
-learning architectures. The idea is that if we can introduce a learnable
-parameter we can simply learn the relationship between keys and values,
-and for a query that might not have had an <em>exact match</em> we can
-compute a “partial” or “soft” match.</p>
+learning architectures. The idea is that if we can introduce a
+<em>learnable parameter</em> we can simply learn the relationship
+between keys and values, and for a query that might not have had an
+<em>exact match</em> we can compute a “partial” or “soft” match.</p>
 <p>The intuition for Attention comes from the idea that we go from,</p>
 <pre class="maths"><code>animal = [
     1 1 0 0
@@ -461,13 +309,20 @@ learn from data that might eventually look like,</p>
 relationship between <code>"dog"</code>, <code>"cat"</code> and
 <code>"animal"</code>.</p>
 <h2 id="references">References</h2>
-<p>[1]
-https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)<br />
-[2] https://x.com/giffmana/status/1570152923233144832?s=20<br />
-[3] https://docs.python.org/3/glossary.html#term-hashable<br />
-[4]
-https://docs.python.org/3/faq/design.html#how-are-dictionaries-implemented-in-cpython<br />
-[5] https://docs.python.org/3/library/sys.html#sys.hash_info<br />
-</p>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li
+id="fn1"><p>https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)
+[2]: https://x.com/giffmana/status/1570152923233144832?s=20 [3]:
+https://docs.python.org/3/glossary.html#term-hashable [4]:
+https://docs.python.org/3/faq/design.html#how-are-dictionaries-implemented-in-cpython
+[5]: https://docs.python.org/3/library/sys.html#sys.hash_info<a
+href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+
 </body>
 </html>
