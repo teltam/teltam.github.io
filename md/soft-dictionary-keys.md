@@ -216,7 +216,7 @@ The idea being the data has enough signal to exact a common relationship between
 
 ## References
 
-[^1]: https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)
+[1]: https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)
 [2]: https://x.com/giffmana/status/1570152923233144832?s=20
 [3]: https://docs.python.org/3/glossary.html#term-hashable
 [4]: https://docs.python.org/3/faq/design.html#how-are-dictionaries-implemented-in-cpython

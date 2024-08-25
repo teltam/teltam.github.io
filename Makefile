@@ -3,7 +3,7 @@ MARKDOWN_DIR = md
 HTML_DIR = posts
 CSS_FILE = /css/water.min.css
 PANDOC = pandoc
-PANDOC_OPTIONS = --standalone --mathjax --highlight-style=tango
+PANDOC_OPTIONS = -H cf --standalone --mathjax --highlight-style=tango
 PORT = 8000
 
 # Find all Markdown files

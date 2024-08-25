@@ -71,6 +71,7 @@ code span.vs { color: #4e9a06; } /* VerbatimString */
 code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="/css/water.min.css">
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "96199c1ca02344b698924c0e72918533"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body>
 
@@ -78,13 +79,15 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <h1 class="title">“Soft” Dictionary Keys</h1>
 </header>
 
-<p>[Transformer Neural Networks]<a href="#fn1" class="footnote-ref"
-id="fnref1" role="doc-noteref"><sup>1</sup></a> utilize the key-concept
-of an Attention Mechanism to perform “lookups” on the data it has seen.
-In this post I want to detail the idea of “soft” keys, and for me it was
-easier to get to the crux of how Transformers work with this
-understanding. I first came across this idea from a [Lucas Beyer
-talk][2].</p>
+<p><a
+href="https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)">Transformer
+Neural Networks</a> utilize the key-concept of an Attention Mechanism to
+perform “lookups” on the data it has seen. In this post I want to detail
+the idea of “soft” keys, and for me it was easier to get to the crux of
+how Transformers work with this understanding. I first came across this
+idea from a <a
+href="https://x.com/giffmana/status/1570152923233144832?s=20">Lucas
+Beyer talk</a>.</p>
 <h2 id="python-dictionaries">Python Dictionaries</h2>
 <p>Most programming languages implement a dictionary (or associative
 map) as a primitive data structure and define them as associations
@@ -101,9 +104,11 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <code>"tiger"</code>, <code>8</code> and they are mapped to values. The
 first three keys are Strings and the fourth key is a Number (integer in
 this case). All the values here are Numbers as well.</p>
-<p>Internally, python calls the in-built [<code>hash</code>][3]
-[method][4] to hash the keys into a well-known or fixed
-representation,</p>
+<p>Internally, python calls the in-built <a
+href="https://docs.python.org/3/glossary.html#term-hashable"><code>hash</code></a>
+<a
+href="https://docs.python.org/3/faq/design.html#how-are-dictionaries-implemented-in-cpython">method</a>
+to hash the keys into a well-known or fixed representation,</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="bu">hash</span>(<span class="dv">10</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dv">10</span></span>
@@ -111,7 +116,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dv">4001473844447581453</span></span></code></pre></div>
 <p>The key point here is that keys are converted into a well-defined
 representation. In the case of python the representation is eventually a
-[fixed size integer][5].</p>
+<a href="https://docs.python.org/3/library/sys.html#sys.hash_info">fixed
+size integer</a>.</p>
 <h2 id="exact-dictionary-lookups">Exact Dictionary Lookups</h2>
 <p>For the python example, dictionary look ups work by supplying a query
 and returning the value for a key that <em>exactly</em> matches the
@@ -309,19 +315,6 @@ learn from data that might eventually look like,</p>
 relationship between <code>"dog"</code>, <code>"cat"</code> and
 <code>"animal"</code>.</p>
 <h2 id="references">References</h2>
-<section id="footnotes" class="footnotes footnotes-end-of-document"
-role="doc-endnotes">
-<hr />
-<ol>
-<li
-id="fn1"><p>https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)
-[2]: https://x.com/giffmana/status/1570152923233144832?s=20 [3]:
-https://docs.python.org/3/glossary.html#term-hashable [4]:
-https://docs.python.org/3/faq/design.html#how-are-dictionaries-implemented-in-cpython
-[5]: https://docs.python.org/3/library/sys.html#sys.hash_info<a
-href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
 
 
 </body>
