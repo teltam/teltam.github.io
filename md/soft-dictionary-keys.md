@@ -1,12 +1,14 @@
-# "Soft" Dictionary Keys
+---
+title: '"Soft" Dictionary Keys'
+---
 
-Transformer Neural Networks [1] utilize the key-concept of an Attention Mechanism to perform "lookups" on the data it has seen. In this post I want to detail the idea of "soft" keys, and for me it was easier to get to the crux of how Transformers work with this understanding. I first came across this idea from a Lucas Beyer talk [2].
+[Transformer Neural Networks][1] utilize the key-concept of an Attention Mechanism to perform "lookups" on the data it has seen. In this post I want to detail the idea of "soft" keys, and for me it was easier to get to the crux of how Transformers work with this understanding. I first came across this idea from a [Lucas Beyer talk][2].
 
 ## Python Dictionaries
 
 Most programming languages implement a dictionary (or associative map) as a primitive data structure and define them as associations between the abstract idea of keys and values.
 
-In python keys are defined as any hashable object. For example, 
+In python keys are defined as any hashable object. For example,
 
 ```python
 m = {
@@ -19,7 +21,7 @@ m = {
 
 Here, we have four keys, `"dog"`, `"cat"`, `"tiger"`, `8` and they are mapped to values. The first three keys are Strings and the fourth key is a Number (integer in this case). All the values here are Numbers as well.
 
-Internally, python calls the in-built `hash`[3]  [4]  method to hash the keys into a well-known or fixed representation,
+Internally, python calls the in-built [`hash`][3]  [method][4] to hash the keys into a well-known or fixed representation,
 
 ```python
 >>> hash(10)
@@ -28,11 +30,11 @@ Internally, python calls the in-built `hash`[3]  [4]  method to hash the keys in
 4001473844447581453
 ```
 
-The key point here is that keys are converted into a well-defined representation. In the case of python the representation is eventually a fixed size integer [5].
+The key point here is that keys are converted into a well-defined representation. In the case of python the representation is eventually a [fixed size integer][5].
 
 ## Exact Dictionary Lookups
 
-For the python example, dictionary look ups work by supplying a query and returning the value for a key that _exactly_ matches the query if there is one, 
+For the python example, dictionary look ups work by supplying a query and returning the value for a key that _exactly_ matches the query if there is one,
 
 ```python
 >>> m["dog"]
@@ -142,14 +144,14 @@ The important observation here is that the keys matrix is a collection of null v
 
 In the `m` dict above, we introduce an exact match for lookup because we want objects to map to exactly one value. If objects are related, like `dog` and `cat`, we remove any relationship that the real world has (ie they are both animals). We do this because for our hypothetical use-case it might not matter, and we can ignore it having understood that we can ignore this relationship.
 
-However if we did want to introduce a relationship between `dog` and `cat`, we have a few options, 
+However if we did want to introduce a relationship between `dog` and `cat`, we have a few options,
 
 1. We look at our use case and figure out a way to connect `dog`, `cat`, `tiger` and our new key `animal`.
 2. We ignore the relationship of `animal` with the existing keys of the dictionary and assign some value our use case would find useful.
 
 Both options would satisfy our assumptions above.
 
-An example of option 1 and option 2 in python code would be, 
+An example of option 1 and option 2 in python code would be,
 ```python
 # option 1
 dog_value = m["dog"]
@@ -163,7 +165,7 @@ m["animal"] = animal_value
 m["animal"] = 112
 ```
 
-What if we did not want to explicitly introduce this new key like the code above? 
+What if we did not want to explicitly introduce this new key like the code above?
 
 In python we could simply introduce a new operation to perform a combined key look up, that is a variation of option 1,
 ```python
@@ -213,8 +215,9 @@ animal = [
 The idea being the data has enough signal to exact a common relationship between `"dog"`, `"cat"` and `"animal"`.
 
 ## References
-[1] https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)\
-[2] https://x.com/giffmana/status/1570152923233144832?s=20\
-[3] https://docs.python.org/3/glossary.html#term-hashable\
-[4] https://docs.python.org/3/faq/design.html#how-are-dictionaries-implemented-in-cpython\
-[5] https://docs.python.org/3/library/sys.html#sys.hash_info\
+
+[1]: https://en.wikipedia.org/wiki/Transformer_(deep_learning_architecture)
+[2]: https://x.com/giffmana/status/1570152923233144832?s=20
+[3]: https://docs.python.org/3/glossary.html#term-hashable
+[4]: https://docs.python.org/3/faq/design.html#how-are-dictionaries-implemented-in-cpython
+[5]: https://docs.python.org/3/library/sys.html#sys.hash_info
