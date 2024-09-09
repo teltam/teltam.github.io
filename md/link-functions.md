@@ -60,15 +60,15 @@ log(\frac{y}{1-y}) = f(x) \\ \\
 \end{aligned}
 $$
 
-Note, multi-label is not the same as multi-class. They sound similar but are different. Multi-label means the dependent label can only be 1 of N labels. It cannot be two labels at the same time. This might seem confusing because many real world objects are typically a combination of multiple labels. To be clear, think of multi-label as predicting "an orange or an apple" for a given image of a fruit. This means that it _has_ to be one or the other and the probability value is modeled using log odds to reflect this. The reason we have $log \ (p / (1-p))$ is to capture this relationship. That is "it is either X or it is not X".
+Note, multi-label is not the same as multi-class. They sound similar but are different. Multi-class means the dependent class can only be 1 of N classes. It cannot be two classes at the same time. This might seem confusing because many real world objects are typically a combination of multiple labels. To be clear, think of multi-class as predicting "an orange or an apple" for a given image of a fruit. This means that it _has_ to be one or the other and the probability value is modeled using log odds to reflect this. The reason we have $log \ (p / (1-p))$ is to capture this relationship. That is "it is either X or it is not X".
 
-Multi-class on the other hand specifically means the model outputs are independent of each other and think of the classes as being "true" at the same time. Instead of asking "is this an orange or an apple" in the case of multi-label, we are asking "is this an apple? ok, is this an orange?" in the multi-class setup. For multi-label regression, the formulation is different and you can think of the setup as building a regression classifier for each of the different classes (think of it as `N` binary logistic regressions).
+Multi-label on the other hand specifically means the model outputs are independent of each other and think of the classes as being "true" at the same time. Instead of asking "is this an orange or an apple" in the case of multi-class, we are asking "is this an apple?, is this an orange?" in the multi-label setup. For multi-label regression, the formulation is different and you can think of the setup as building a regression classifier for each of the different labels (think of it as `N` binary logistic regressions).
 
-So, how do we extend Binary Logistic Regression to Multinomial (or Multi-label Regression)?
+So, how do we extend Binary Logistic Regression to Multinomial (or Multi-class Regression)?
 
-## Multi-label Logistic Regression
+## Multi-class Logistic Regression
 
-For multi-label logistic regression we have to look back at what the logit formulation is actually doing. When we start with $log(y/(1-y)) = f(x)$ we are essentially saying the "boundary line" between the two classes is `f(x)`. In the discussion above `f(x)` is linear for discussion's sake but it can be a non-linear function as well which would help with in cases like the circle dataset above. After rearranging the terms we get a "logistic" separation boundary as we saw above.
+For multi-class logistic regression we have to look back at what the logit formulation is actually doing. When we start with $log(y/(1-y)) = f(x)$ we are essentially saying the "boundary line" between the two classes is `f(x)`. In the discussion above `f(x)` is linear for discussion's sake but it can be a non-linear function as well which would help with in cases like the circle dataset above. After rearranging the terms we get a "logistic" separation boundary as we saw above.
 
 So, if we think of the logits as representing the boundary between two sets of data points, additional labels are simply pair-wise logits as well with a caveat. The idea is that if we have `K` classes, we pick one of them (say the last class for convenience), and build logits between that class and every other class. This works because we hold one class out and build multiple "logistic" separation boundaries against it. Assuming `K=3` and using class `3` as boundary, we  have,
 

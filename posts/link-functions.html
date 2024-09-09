@@ -1,23 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Logistic Regression == Link(Linear Regression) ??</title>
-  <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-  <link rel="stylesheet" href="/css/water.min.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="/css/water.min.css" />
+  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "96199c1ca02344b698924c0e72918533"}'></script><!-- End Cloudflare Web Analytics -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
   type="text/javascript"></script>
-  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "96199c1ca02344b698924c0e72918533"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body>
-
-<header>
+<header id="title-block-header">
 <h1 class="title">Logistic Regression == Link(Linear Regression) ??</h1>
 </header>
-
 <h2 id="linear-regression">Linear Regression</h2>
 <p>For Linear Regression, given a Dependent variable <code>y</code> that
 is a Real number, we want to use the Independent variable
@@ -121,28 +135,28 @@ log(\frac{y}{1-y}) = f(x) \\ \\
 \end{aligned}
 \]</span></p>
 <p>Note, multi-label is not the same as multi-class. They sound similar
-but are different. Multi-label means the dependent label can only be 1
-of N labels. It cannot be two labels at the same time. This might seem
+but are different. Multi-class means the dependent class can only be 1
+of N classes. It cannot be two classes at the same time. This might seem
 confusing because many real world objects are typically a combination of
-multiple labels. To be clear, think of multi-label as predicting “an
+multiple labels. To be clear, think of multi-class as predicting “an
 orange or an apple” for a given image of a fruit. This means that it
 <em>has</em> to be one or the other and the probability value is modeled
 using log odds to reflect this. The reason we have <span
 class="math inline">\(log \ (p / (1-p))\)</span> is to capture this
 relationship. That is “it is either X or it is not X”.</p>
-<p>Multi-class on the other hand specifically means the model outputs
+<p>Multi-label on the other hand specifically means the model outputs
 are independent of each other and think of the classes as being “true”
 at the same time. Instead of asking “is this an orange or an apple” in
-the case of multi-label, we are asking “is this an apple? ok, is this an
-orange?” in the multi-class setup. For multi-label regression, the
+the case of multi-class, we are asking “is this an apple?, is this an
+orange?” in the multi-label setup. For multi-label regression, the
 formulation is different and you can think of the setup as building a
-regression classifier for each of the different classes (think of it as
+regression classifier for each of the different labels (think of it as
 <code>N</code> binary logistic regressions).</p>
 <p>So, how do we extend Binary Logistic Regression to Multinomial (or
-Multi-label Regression)?</p>
-<h2 id="multi-label-logistic-regression">Multi-label Logistic
+Multi-class Regression)?</p>
+<h2 id="multi-class-logistic-regression">Multi-class Logistic
 Regression</h2>
-<p>For multi-label logistic regression we have to look back at what the
+<p>For multi-class logistic regression we have to look back at what the
 logit formulation is actually doing. When we start with <span
 class="math inline">\(log(y/(1-y)) = f(x)\)</span> we are essentially
 saying the “boundary line” between the two classes is <code>f(x)</code>.
@@ -206,7 +220,5 @@ class="uri">https://en.wikipedia.org/wiki/Probit_model</a></p>
 <p>[5] Training Stochastic Model Recognition Algorithms as Networks can
 lead to Maximum Mutual Information Estimation of Parameters - John S.
 Bridle</p>
-
-
 </body>
 </html>
