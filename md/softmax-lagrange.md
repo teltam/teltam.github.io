@@ -1,7 +1,6 @@
 ---
 title: 'Softmax and Lagrange Multipliers'
 ---
-
 My understanding from a Machine Learning perspective is that Softmax happens to be _a_ function that can satisfy the requirements of a multi-class probability distribution function,
 
 1. `f([x1, x2]) -> [y1, y2, ...]` where y1 and y2 are positive numbers.
@@ -11,13 +10,13 @@ I didn't realize you could analytically derive the Softmax function using Entrop
 
 ## Background
 
-Given a probability distribution for a set of outcomes (classes), the Shannon Entropy for this distribution quantifies how likely *a* set of outcomes are if we were to observe them. It just so happens that `log(1/p)` is the only function that satisfies the constraints of the problem Shannon was trying to solve [^1], and thus the formula for Shanon Entropy is,
+Given a probability distribution for a set of outcomes (classes), the Shannon Entropy for this distribution quantifies how likely *a* set of outcomes are if we were to observe them. It just so happens that `log(1/p)` is the only function that satisfies the constraints of the problem Shannon was trying to solve [1], and thus the formula for Shanon Entropy is,
 
 $$ H(p) = - \Sigma_i \ p_i * log(p_i) $$
 
-Why do we care to maximize the entropy of the learned probability distribution? [^3] Let's say we have the following discrete probability function `[0.25, 0.25, 0.25, 0.25]`. That is, there are four classes and each of them are equally likely. Here, `H = 1.3`, we have maximum entropy because we make no assumptions about the likelihood of any class. A function `[0.8, 0.1, 0.0009, 0.0001]`, with `H = 0.4`, has some assumptions baked in because we expect the first class to show up 80% of the time.
+Why do we care to maximize the entropy of the learned probability distribution? [2] Let's say we have the following discrete probability function `[0.25, 0.25, 0.25, 0.25]`. That is, there are four classes and each of them are equally likely. Here, `H = 1.3`, we have maximum entropy because we make no assumptions about the likelihood of any class. A function `[0.8, 0.1, 0.0009, 0.0001]`, with `H = 0.4`, has some assumptions baked in because we expect the first class to show up 80% of the time.
 
-This setup is called the Maximum Entropy Principle[^3] and we will use it in the derivation below.
+This setup is called the Maximum Entropy Principle[2] and we will use it in the derivation below.
 
 ## Derivation
 
@@ -32,7 +31,7 @@ $$ \Sigma_i \ p_i * z_i = \mu $$
 
 The first constraint is to ensure the probability values sum to 1. 
 
-The second constraint is a bit harder to parse from an ML pov. Derived from a Physics pov [^2], this constraint is simply a prior on what the probability distribution must look like. If I'm working on this problem for the first time it's not clear why I should pick this constraint specifically, until you solve a slighly simpler problem which we will do first below.
+The second constraint is a bit harder to parse from an ML pov. Derived from a Physics pov [3], this constraint is simply a prior on what the probability distribution must look like. If I'm working on this problem for the first time it's not clear why I should pick this constraint specifically, until you solve a slighly simpler problem which we will do first below.
 
 ### Simpler Optimization Problem
 
@@ -49,7 +48,7 @@ $$ L = - \Sigma_i\  p_i log(p_i) - \lambda_1 (\Sigma_i \ p_i -1) $$
 Taking the derivative and setting to 0 you get,
 $$
 ∂L/∂p_i = -log(p_i) - 1 - λ₁ = 0
-$$ and solving for $ p_i $ you get,
+$$ and solving for $p_i$ you get,
 $$
 \begin{matrix}
 -log(p_i) = 1 + λ_1 \\ 
@@ -93,9 +92,9 @@ $$
 \begin{align}
 \Sigma_i \ e^{(-1 - λ₁)} * e^{(-λ₂ * z_i)} = 1 \\
 => e^{(-1 - λ₁)} = 1 / Σ e^{(-λ₂ * z_i)}
-
 \end{align}
 $$
+
 and finally substituting back,
 $$
 \begin{align}
@@ -115,9 +114,8 @@ deriving the softmax formula.
 
 ## References
 
-[^1]: https://en.wikipedia.org/wiki/A_Mathematical_Theory_of_Communication
+[1] https://en.wikipedia.org/wiki/A_Mathematical_Theory_of_Communication
 
-[^2]: https://en.wikipedia.org/wiki/Boltzmann_distribution
+[2] https://en.wikipedia.org/wiki/Principle_of_maximum_entropy
 
-[^3]: https://en.wikipedia.org/wiki/Principle_of_maximum_entropy
-
+[3] https://en.wikipedia.org/wiki/Boltzmann_distribution

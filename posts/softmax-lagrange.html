@@ -48,24 +48,21 @@ a probability distribution.</p>
 Shannon Entropy for this distribution quantifies how likely <em>a</em>
 set of outcomes are if we were to observe them. It just so happens that
 <code>log(1/p)</code> is the only function that satisfies the
-constraints of the problem Shannon was trying to solve <a href="#fn1"
-class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>,
-and thus the formula for Shanon Entropy is,</p>
+constraints of the problem Shannon was trying to solve [1], and thus the
+formula for Shanon Entropy is,</p>
 <p><span class="math display">\[ H(p) = - \Sigma_i \ p_i * log(p_i)
 \]</span></p>
 <p>Why do we care to maximize the entropy of the learned probability
-distribution? <a href="#fn2" class="footnote-ref" id="fnref2"
-role="doc-noteref"><sup>2</sup></a> Let’s say we have the following
-discrete probability function <code>[0.25, 0.25, 0.25, 0.25]</code>.
-That is, there are four classes and each of them are equally likely.
-Here, <code>H = 1.3</code>, we have maximum entropy because we make no
-assumptions about the likelihood of any class. A function
+distribution? [2] Let’s say we have the following discrete probability
+function <code>[0.25, 0.25, 0.25, 0.25]</code>. That is, there are four
+classes and each of them are equally likely. Here, <code>H = 1.3</code>,
+we have maximum entropy because we make no assumptions about the
+likelihood of any class. A function
 <code>[0.8, 0.1, 0.0009, 0.0001]</code>, with <code>H = 0.4</code>, has
 some assumptions baked in because we expect the first class to show up
 80% of the time.</p>
-<p>This setup is called the Maximum Entropy Principle<a href="#fn3"
-class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> and
-we will use it in the derivation below.</p>
+<p>This setup is called the Maximum Entropy Principle[2] and we will use
+it in the derivation below.</p>
 <h2 id="derivation">Derivation</h2>
 <h3 id="main-optimization-problem">Main Optimization Problem</h3>
 <p>Given <span class="math inline">\(z_i\)</span> as the raw output of a
@@ -79,12 +76,11 @@ function,</p>
 <p>The first constraint is to ensure the probability values sum to
 1.</p>
 <p>The second constraint is a bit harder to parse from an ML pov.
-Derived from a Physics pov <a href="#fn4" class="footnote-ref"
-id="fnref4" role="doc-noteref"><sup>4</sup></a>, this constraint is
-simply a prior on what the probability distribution must look like. If
-I’m working on this problem for the first time it’s not clear why I
-should pick this constraint specifically, until you solve a slighly
-simpler problem which we will do first below.</p>
+Derived from a Physics pov [3], this constraint is simply a prior on
+what the probability distribution must look like. If I’m working on this
+problem for the first time it’s not clear why I should pick this
+constraint specifically, until you solve a slighly simpler problem which
+we will do first below.</p>
 <h3 id="simpler-optimization-problem">Simpler Optimization Problem</h3>
 <p>Given <span class="math inline">\(z_i\)</span> as the raw output of a
 DNN, and <span class="math inline">\(p_i = F(z_i)\)</span>, Find <span
@@ -99,7 +95,8 @@ function,</p>
 <p>Taking the derivative and setting to 0 you get, <span
 class="math display">\[
 ∂L/∂p_i = -log(p_i) - 1 - λ₁ = 0
-\]</span> and solving for $ p_i $ you get, <span class="math display">\[
+\]</span> and solving for <span class="math inline">\(p_i\)</span> you
+get, <span class="math display">\[
 \begin{matrix}
 -log(p_i) = 1 + λ_1 \\
 log(p_i) = -1 - λ_1 \\
@@ -140,16 +137,17 @@ p_i = exp(-1 - λ₁ - λ₂ * z_i) \\
 =&gt; p_i = exp(-1 - λ₁) * exp(-λ₂ * z_i)
 \end{align}
 \]</span></p>
-<p>Using the constraint 1 we get, $$ <span
-class="math display">\[\begin{align}
+<p>Using the constraint 1 we get, <span class="math display">\[
+\begin{align}
 \Sigma_i \ e^{(-1 - λ₁)} * e^{(-λ₂ * z_i)} = 1 \\
 =&gt; e^{(-1 - λ₁)} = 1 / Σ e^{(-λ₂ * z_i)}
-
-\end{align}\]</span> <span class="math display">\[
-and finally substituting back,
-\]</span> <span class="math display">\[\begin{align}
+\end{align}
+\]</span></p>
+<p>and finally substituting back, <span class="math display">\[
+\begin{align}
 p_i = exp(-λ₂ * z_i) / Σ exp(-λ₂ * z_j)
-\end{align}\]</span> $$</p>
+\end{align}
+\]</span></p>
 <p>and if we set <span class="math inline">\(\lambda_2\)</span> to -1,
 <span class="math display">\[
 \begin{align}
@@ -158,22 +156,9 @@ p_i = exp(-λ₂ * z_i) / Σ exp(-λ₂ * z_j)
 \]</span></p>
 <p>deriving the softmax formula.</p>
 <h2 id="references">References</h2>
-<section id="footnotes" class="footnotes footnotes-end-of-document"
-role="doc-endnotes">
-<hr />
-<ol>
-<li
-id="fn1"><p>https://en.wikipedia.org/wiki/A_Mathematical_Theory_of_Communication<a
-href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li
-id="fn2"><p>https://en.wikipedia.org/wiki/Principle_of_maximum_entropy<a
-href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li
-id="fn3"><p>https://en.wikipedia.org/wiki/Principle_of_maximum_entropy<a
-href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>https://en.wikipedia.org/wiki/Boltzmann_distribution<a
-href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
+<p>[1]
+https://en.wikipedia.org/wiki/A_Mathematical_Theory_of_Communication</p>
+<p>[2] https://en.wikipedia.org/wiki/Principle_of_maximum_entropy</p>
+<p>[3] https://en.wikipedia.org/wiki/Boltzmann_distribution</p>
 </body>
 </html>
