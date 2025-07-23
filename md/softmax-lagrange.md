@@ -112,6 +112,9 @@ $$
 
 deriving the softmax formula.
 
+(Note: if you set $\lambda_2$ to $-\infty$ as a limit, we get the _hard max_ function which is $max(1, 2, 4) = 4$)
+
+
 ## References
 
 [1] https://en.wikipedia.org/wiki/A_Mathematical_Theory_of_Communication
