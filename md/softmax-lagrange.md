@@ -10,7 +10,7 @@ I didn't realize you could analytically derive the Softmax function using Entrop
 
 ## Background
 
-Given a probability distribution for a set of outcomes (classes), the Shannon Entropy for this distribution quantifies how likely *a* set of outcomes are if we were to observe them. It just so happens that `log(1/p)` is the only function that satisfies the constraints of the problem Shannon was trying to solve [1], and thus the formula for Shanon Entropy is,
+Given a probability distribution for a set of outcomes (classes), the Shannon Entropy for this distribution quantifies how uncertain *a* distribution is if we were to observe them. It just so happens that `log(1/p)` is the only function that satisfies the constraints of the problem Shannon was trying to solve [1], and thus the formula for Shanon Entropy is,
 
 $$ H(p) = - \Sigma_i \ p_i * log(p_i) $$
 
