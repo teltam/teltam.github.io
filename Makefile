@@ -13,7 +13,11 @@ MARKDOWN_FILES = $(wildcard $(MARKDOWN_DIR)/*.md)
 HTML_FILES = $(patsubst $(MARKDOWN_DIR)/%.md,$(HTML_DIR)/%.html,$(MARKDOWN_FILES))
 
 # Default target
-all: $(HTML_FILES) index.html
+all: generate-index $(HTML_FILES) index.html
+
+# Generate index.md from md/ files
+generate-index:
+	python3 scripts/generate_index.py
 
 # Rule to convert Markdown to HTML
 $(HTML_DIR)/%.html: $(MARKDOWN_DIR)/%.md
@@ -43,4 +47,4 @@ serve: all
 	@python3 -m http.server $(PORT)
 
 # Phony targets
-.PHONY: all clean serve
+.PHONY: all clean serve generate-index
