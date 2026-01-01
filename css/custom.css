@@ -1,0 +1,6 @@
+header#title-block-header p.subtitle {
+  font-size: 1.2em;
+  font-style: italic;
+  color: #666;
+  margin-top: -0.5em;
+}

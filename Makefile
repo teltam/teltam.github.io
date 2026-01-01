@@ -24,6 +24,7 @@ $(HTML_DIR)/%.html: $(MARKDOWN_DIR)/%.md
 	@mkdir -p $(HTML_DIR)
 	$(PANDOC) $(PANDOC_OPTIONS) \
 		--css=$(CSS_FILE) \
+		--css=/css/custom.css \
 		--resource-path=$(MARKDOWN_DIR):media \
 		-f markdown -t html \
 		-o $@ $<
@@ -32,6 +33,7 @@ $(HTML_DIR)/%.html: $(MARKDOWN_DIR)/%.md
 index.html: index.md
 	$(PANDOC) $(PANDOC_OPTIONS) \
 		--css=$(CSS_FILE) \
+		--css=/css/custom.css \
 		--resource-path=.:media \
 		-f markdown -t html \
 		-o $@ $<
