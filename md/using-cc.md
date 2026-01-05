@@ -152,6 +152,7 @@ I primarily use CC, but will ask Codex to run code reviews. Having some variety 
 It is very easy to setup a greenfield project from scratch and go 0->1 in a matter of days and not months. This is critical especially when a lot of design choices and contention points are open to discussion. Depending on your org YMMV on how quickly you can get the project off the ground. With CC the [cost is so low](https://x.com/rakyll/status/2007239758158975130) it would be a travesty to not take advantage of it,
 
 ![](/media/jaana-dogan-post-claude-code.jpg)
+
 ### Note \#14: Treat the Agent like a Pure Function when you need to explore, have specific prompts if needed.
 
 The final note is on Legacy codebases. CC will work real well but it might not have the right context. This is where I try to step in and guide CC assuming it to be a junior engineer starting out on a large legacy codebase - try to understand the code first, make notes, read specific doc versions, write unit tests, make changes.
